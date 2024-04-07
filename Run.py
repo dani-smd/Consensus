@@ -1,10 +1,9 @@
-import subprocess
 import matplotlib.pyplot as plt
 from os.path import exists
 import os
 
 while True:
-    subprocess.run("cls", shell=True)
+    os.system("cls")
     print("# --------- This is a simulator of POS --------- #")
     print("# ---------------------------------------------- #")
     print("# ---------- Select one of these items --------- #")
@@ -31,7 +30,7 @@ while True:
         the_file.close()
     elif item == "2":
         while True:
-            subprocess.run("cls", shell=True)
+            os.system("cls")
             print("# --------- This is a simulator of POS --------- #")
             print("# --------------------SHA256-------------------- #")
             print("# --------- Select one of these Metrics -------- #")
@@ -44,32 +43,33 @@ while True:
             item2 = input("Write the number of item you want: ")
 
             if item2 == "1":
-                subprocess.run("cls", shell=True)
+                os.system("cls")
                 print("# --- Latency selected for SHA256 --- #")
-                subprocess.run(["python", "SHA256/POS__Latency.py"])
+                # C:\Users\Danial\Desktop\Projects\Ms.Zeinab - Iraq\Sybil Attack\.venv\Scripts\python.exe
+                os.system("python SHA256/POS__Latency.py")
                 input("Press Enter to continue...")
             elif item2 == "2":
-                subprocess.run("cls", shell=True)
+                os.system("cls")
                 print("# --- Throughput selected for SHA256 --- #")
-                subprocess.run(["python", "SHA256/POS__Throughput.py"])
+                os.system("python SHA256/POS__Throughput.py")
                 input("Press Enter to continue...")
             elif item2 == "3":
-                subprocess.run("cls", shell=True)
+                os.system("cls")
                 print("# --- Fault Tolerance selected for SHA256 --- #")
-                subprocess.run(["python", "SHA256/POS__Fault_Tolerance.py"])
+                os.system("python SHA256/POS__Fault_Tolerance.py")
                 input("Press Enter to continue...")
             elif item2 == "4":
-                subprocess.run("cls", shell=True)
+                os.system("cls")
                 print("# --- Energy Consumption selected for SHA256 --- #")
-                subprocess.run(["python", "SHA256/POS__Energy_Consumption.py"])
+                os.system("python SHA256/POS__Energy_Consumption.py")
                 input("Press Enter to continue...")
             elif item2 == "5":
-                subprocess.run("cls", shell=True)
+                os.system("cls")
                 input("Press enter to back to the main menu...")
             break
     elif item == "3":
         while True:
-            subprocess.run("cls", shell=True)
+            os.system("cls")
             print("# --------- This is a simulator of POS --------- #")
             print("# --------------------BLAKE3-------------------- #")
             print("# --------- Select one of these Metrics -------- #")
@@ -82,31 +82,31 @@ while True:
             item2 = input("Write the number of item you want: ")
 
             if item2 == "1":
-                subprocess.run("cls", shell=True)
+                os.system("cls")
                 print("# --- Latency selected for BLAKE3 --- #")
-                subprocess.run(["python", "Blake3/POS__Latency.py"])
+                os.system("python Blake3/POS__Latency.py")
                 input("Press Enter to continue...")
             elif item2 == "2":
-                subprocess.run("cls", shell=True)
+                os.system("cls")
                 print("# --- Throughput selected for BLAKE3 --- #")
-                subprocess.run(["python", "Blake3/POS__Throughput.py"])
+                os.system("python Blake3/POS__Throughput.py")
                 input("Press Enter to continue...")
             elif item2 == "3":
-                subprocess.run("cls", shell=True)
+                os.system("cls")
                 print("# --- Fault Tolerance selected for BLAKE3 --- #")
-                subprocess.run(["python", "Blake3/POS__Fault_Tolerance.py"])
+                os.system("python Blake3/POS__Fault_Tolerance.py")
                 input("Press Enter to continue...")
             elif item2 == "4":
-                subprocess.run("cls", shell=True)
+                os.system("cls")
                 print("# --- Energy Consumption selected for BLAKE3 --- #")
-                subprocess.run(["python", "Blake3/POS__Energy_Consumption.py"])
+                os.system("python Blake3/POS__Energy_Consumption.py")
                 input("Press Enter to continue...")
             elif item2 == "5":
-                subprocess.run("cls", shell=True)
+                os.system("cls")
                 input("Press enter to back to the main menu...")
             break
     elif item == "4":
-        subprocess.run("cls", shell=True)
+        os.system("cls")
         # --- Blake3
         file1 = open('Blake3/energy_blake3.txt', 'r')
         file2 = open('Blake3/fault_blake3.txt', 'r')
@@ -186,4 +186,4 @@ while True:
     elif item == "5":
         break
 
-    subprocess.run("cls", shell=True)
+    os.system("cls")
