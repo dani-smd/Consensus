@@ -9,7 +9,7 @@ import os
 
 from Library.blockchain import Blockchain
 from Library.vlidator import Validator
-from ProofOfStake import ProofOfStake
+from Blake3.Library.ProofOfStake import ProofOfStake
 from Library.block import Block
 
 

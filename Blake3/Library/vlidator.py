@@ -13,21 +13,30 @@ class Validator:
         self.last_block_received = None
         self.num_transactions_processed = 0
         self.energy_consumed = 0
-
+        self.valid = False
     # --- This function add peers to each other
     def add_peer(self, peer):
         self.peers.append(peer)
 
     # --- This function send blocks for validation
     def receive_block(self, block):
-        if self.validate_block(block) and not self.blockchain.has_block(block):
-            self.last_block_received = block
+        if not self.blockchain.has_block(block):
+            self.valid = all(validator.validate_block(block) for validator in self.peers)
+        if self.valid:
             address = self.address
+            self.last_block_received = block
             self.blockchain.add_block(block, address)
-            self.num_transactions_processed += 1    # --- Number of transaction(or Block) processed by this validator
-            self.energy_consumed += 1               # --- Simulate consumed by this validator to validate the block
-            for peer in self.peers:
-                peer.receive_block(block)
+            # for peer in self.peers:
+            #     peer.receive_block(block)
+
+            #  if self.validate_block(block) and not self.blockchain.has_block(block):
+            #      self.last_block_received = block
+            #     address = self.address
+            #     self.blockchain.add_block(block, address)
+            #      self.num_transactions_processed += 1   --- Number of transaction(or Block) processed by this validator
+            #      self.energy_consumed += 1               --- Simulate consumed by this validator to validate the block
+            #      for peer in self.peers:
+            #     peer.receive_block(block)
 
     # --- This function validate block by validators
     def validate_block(self, block):

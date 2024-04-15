@@ -9,7 +9,7 @@ import os
 
 from Library.blockchain import Blockchain
 from Library.vlidator import Validator
-from ProofOfStake import ProofOfStake
+from SHA256.Library.ProofOfStake import ProofOfStake
 from Library.block import Block
 
 
