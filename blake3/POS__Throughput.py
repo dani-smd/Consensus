@@ -1,16 +1,16 @@
 from os.path import exists
 import jsonpickle
-import random
 import string
+import random
 import simpy
-import json
 import time
+import json
 import os
 
-from Library.blockchain import Blockchain
-from Library.vlidator import Validator
-from SHA256.Library.ProofOfStake import ProofOfStake
-from Library.block import Block
+from library.blockchain import Blockchain
+from library.vlidator import Validator
+from blake3.library.ProofOfStake import ProofOfStake
+from library.block import Block
 
 
 # --- This class defines our network.py of blockchain
@@ -36,7 +36,6 @@ class Network:
     # --- This function simulate our consensus algorithm and calculate the Latency
     def simulate(self, num_blocks, status):
         start_time = time.time()
-        processed_blocks = 0
 
         # --- Create and schedule the arrival of new blocks
         for i in range(num_blocks):
@@ -53,12 +52,12 @@ class Network:
 
         throughput = processed_blocks / elapsed_time
 
-        with open('SHA256/throughput.txt', 'a') as the_file:
+        with open('blake3/throughput.txt', 'a') as the_file:
             the_file.write(f'{throughput:.6f}\n')
         the_file.close()
 
         if status:
-            f = open("SHA256/Throughput(SHA256)_Blockchain.json", "a")
+            f = open("blake3/Throughput(blake3)_Blockchain.json", "a")
             f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
             f.close()
 
@@ -88,7 +87,6 @@ class Network:
 
     def process_block(self, validator, block):
         # --- Simulate the validation of blocks by validators
-        # sim_time = random.random()
         sim_time = 0.5
         yield self.env.timeout(sim_time)  # --- Simulate some delay
         validator.receive_block(block)  # --- Process the block and propagate to peers
@@ -107,10 +105,10 @@ def main():
     # --- Number of iterations
     iteration = metrics[2]
     # ---
-    if exists('SHA256/throughput_sha256.txt'):
-        os.remove('SHA256/throughput_sha256.txt')
-    if exists('SHA256/Throughput(SHA256)_Blockchain.json'):
-        os.remove('SHA256/Throughput(SHA256)_Blockchain.json')
+    if exists('blake3/throughput_Blake3.txt'):
+        os.remove('blake3/throughput_Blake3.txt')
+    if exists('blake3/Throughput(blake3)_Blockchain.json'):
+        os.remove('blake3/Throughput(blake3)_Blockchain.json')
     # ---
     for i in range(0, iteration):
         network = Network(num_validators)
@@ -121,7 +119,7 @@ def main():
             status = False
             network.simulate(num_blocks, status)
     # ---
-    file1 = open('SHA256/throughput.txt', 'r')
+    file1 = open('blake3/throughput.txt', 'r')
     lines = file1.readlines()
     file1.close()
     # ---
@@ -131,14 +129,14 @@ def main():
         count += float(line.strip())
     # ---
     throughput = count / iteration
-    with open('SHA256/throughput_sha256.txt', 'a') as the_file:
+    with open('blake3/throughput_Blake3.txt', 'a') as the_file:
         the_file.write(f'{throughput:.6f}\n')
     the_file.close()
     print("Processing . . . ")
     time.sleep(2)
     print(f"Throughput: {throughput:.6f} transactions per second")
-    if exists('SHA256/throughput.txt'):
-        os.remove('SHA256/throughput.txt')
+    if exists('blake3/throughput.txt'):
+        os.remove('blake3/throughput.txt')
 
 
 if __name__ == "__main__":

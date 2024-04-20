@@ -7,36 +7,37 @@ import json
 import time
 import os
 
-from Library.blockchain import Blockchain
-from Library.vlidator import Validator
-from Blake3.Library.ProofOfStake import ProofOfStake
-from Library.block import Block
+from library.blockchain import Blockchain
+from library.vlidator import Validator
+from sha256.library.ProofOfStake import ProofOfStake
+from library.block import Block
 
 
 # --- This class defines our network.py of blockchain
 class Network:
-
     # --- This function initialize the network.py
     def __init__(self, num_validators):
+        self.stakers = {}
         self.env = simpy.Environment()
         self.blockchain = Blockchain()
-        self.validators = [Validator(self.env, f"Validator {i}", random.randint(1, 10), self.blockchain,
-                                     f"Address Node {i}") for i in range(num_validators)]
-        self.num_validators = num_validators
+        self.validators = [
+            Validator(self.env, f"Validator {i}", random.randint(1, 10), self.blockchain, f"Address Node {i}") for i in
+            range(num_validators)]
         self.add_connections()
 
     # --- This function make connections between nodes
     def add_connections(self):
         # --- Connect validators in a mesh network.py
         for i in range(len(self.validators)):
-            for j in range(i + 1, len(self.validators)):
-                self.validators[i].add_peer(self.validators[j])
-                self.validators[j].add_peer(self.validators[i])
+            for j in range(i + 1, len(self.validators) + 1):
+                self.validators[i].add_peer(self.validators[j - 1])
+                self.validators[j - 1].add_peer(self.validators[i])
 
     # --- This function simulate our consensus algorithm and calculate the Latency
-    def simulate(self, num_blocks, avg_power, num_nodes, status):
-
+    def simulate(self, num_blocks, status):
         start_time = time.time()
+
+        processed_blocks = 0
 
         # --- Create and schedule the arrival of new blocks
         for i in range(num_blocks):
@@ -47,18 +48,14 @@ class Network:
 
         end_time = time.time()
 
-        elapsed_time = end_time - start_time
+        latency = (end_time - start_time) / num_blocks
 
-        total_time = elapsed_time * num_nodes       # --- total running time of all nodes
-
-        energy = (avg_power / 1000) * total_time    # --- energy consumption in kilowatt-hours (kWh)
-
-        with open('Blake3/energy.txt', 'a') as the_file:
-            the_file.write(f'{energy:.6f}\n')
+        with open('sha256/latency.txt', 'a') as the_file:
+            the_file.write(f'{latency:.6f}\n')
         the_file.close()
 
         if status:
-            f = open("Blake3/Energy_Consumption(Blake3)_Blockchain.json", "a")
+            f = open("sha256/Latency(sha256)_Blockchain.json", "a")
             f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
             f.close()
 
@@ -70,7 +67,6 @@ class Network:
         return result_string
 
     def arrive_block(self, index):
-
         # --- Simulate the arrival of new blocks and their processing by validators
         block = Block(index, time.time(), f"Block data {index}", "")
         block.nonce = random.randint(0, 1000)  # --- Assign a random nonce value
@@ -79,13 +75,17 @@ class Network:
         pos = ProofOfStake()
         for validator in self.validators:
             pos.update(validator.name, validator.stake)
-
         # --- When a forger selected it goes to validate the block and then put it to the chain
         forger = pos.forger(self.get_random_string(index))
         for validator in self.validators:
             # --- In here we check which one of validators is forger
             if forger == validator.name:
                 yield self.env.process(self.process_block(validator, block))
+                # --- Check how many times a validator selected as a forger
+                if validator.name in self.stakers.keys():
+                    self.stakers[validator.name] += 1
+                else:
+                    self.stakers[validator.name] = 1
 
     def process_block(self, validator, block):
         # --- Simulate the validation of blocks by validators
@@ -107,24 +107,22 @@ def main():
     num_blocks = metrics[1]
     # --- Number of iterations
     iteration = metrics[2]
-    # --- Average power consumption of a single node in watts
-    avg_power = metrics[3]
     # ---
-    if exists('Blake3/energy_blake3.txt'):
-        os.remove('Blake3/energy_blake3.txt')
-    if exists('Blake3/Energy_Consumption(Blake3)_Blockchain.json'):
-        os.remove('Blake3/Energy_Consumption(Blake3)_Blockchain.json')
+    if exists('sha256/latency_sha256.txt'):
+        os.remove('sha256/latency_sha256.txt')
+    if exists('sha256/Latency(sha256)_Blockchain.json'):
+        os.remove('sha256/Latency(sha256)_Blockchain.json')
     # ---
     for i in range(0, iteration):
         network = Network(num_validators)
         if i == 0:
             status = True
-            network.simulate(num_blocks, avg_power, num_validators, status)
+            network.simulate(num_blocks, status)
         else:
             status = False
-            network.simulate(num_blocks, avg_power, num_validators, status)
+            network.simulate(num_blocks, status)
     # ---
-    file1 = open('Blake3/energy.txt', 'r')
+    file1 = open('sha256/latency.txt', 'r')
     lines = file1.readlines()
     file1.close()
     # ---
@@ -133,15 +131,15 @@ def main():
     for line in lines:
         count += float(line.strip())
     # ---
-    energy = count / iteration
-    with open('Blake3/energy_blake3.txt', 'a') as the_file:
-        the_file.write(f'{energy:.6f}\n')
+    latency = count / iteration
+    with open('sha256/latency_sha256.txt', 'a') as the_file:
+        the_file.write(f'{latency:.6f}\n')
     the_file.close()
     print("Processing . . . ")
     time.sleep(2)
-    print(f"Energy Consumption: {energy:.6f} Kwh")
-    if exists('Blake3/energy.txt'):
-        os.remove('Blake3/energy.txt')
+    print(f"Latency per block: {latency:.6f} seconds")
+    if exists('sha256/latency.txt'):
+        os.remove('sha256/latency.txt')
 
 
 if __name__ == "__main__":

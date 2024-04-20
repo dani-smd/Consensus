@@ -7,10 +7,10 @@ import json
 import time
 import os
 
-from Library.blockchain import Blockchain
-from Library.vlidator import Validator
-from SHA256.Library.ProofOfStake import ProofOfStake
-from Library.block import Block
+from library.blockchain import Blockchain
+from library.vlidator import Validator
+from sha256.library.ProofOfStake import ProofOfStake
+from library.block import Block
 
 
 # --- This class defines our network.py of blockchain
@@ -57,12 +57,12 @@ class Network:
 
         energy = (avg_power / 1000) * total_time  # --- energy consumption in kilowatt-hours (kWh)
 
-        with open('SHA256/energy.txt', 'a') as the_file:
+        with open('sha256/energy.txt', 'a') as the_file:
             the_file.write(f'{energy:.6f}\n')
         the_file.close()
 
         if status:
-            f = open("SHA256/Energy_Consumption(SHA256)_Blockchain.json", "a")
+            f = open("sha256/Energy_Consumption(sha256)_Blockchain.json", "a")
             f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
             f.close()
 
@@ -113,10 +113,10 @@ def main():
     # --- Average power consumption of a single node in watts
     avg_power = metrics[3]
     # ---
-    if exists('SHA256/energy_sha256.txt'):
-        os.remove('SHA256/energy_sha256.txt')
-    if exists('SHA256/Energy_Consumption(SHA256)_Blockchain.json'):
-        os.remove('SHA256/Energy_Consumption(SHA256)_Blockchain.json')
+    if exists('sha256/energy_sha256.txt'):
+        os.remove('sha256/energy_sha256.txt')
+    if exists('sha256/Energy_Consumption(sha256)_Blockchain.json'):
+        os.remove('sha256/Energy_Consumption(sha256)_Blockchain.json')
     # ---
     for i in range(0, iteration):
         network = Network(num_validators)
@@ -127,7 +127,7 @@ def main():
             status = False
             network.simulate(num_blocks, avg_power, num_validators, status)
     # ---
-    file1 = open('SHA256/energy.txt', 'r')
+    file1 = open('sha256/energy.txt', 'r')
     lines = file1.readlines()
     file1.close()
     # ---
@@ -137,14 +137,14 @@ def main():
         count += float(line.strip())
     # ---
     energy = count / iteration
-    with open('SHA256/energy_sha256.txt', 'a') as the_file:
+    with open('sha256/energy_sha256.txt', 'a') as the_file:
         the_file.write(f'{energy:.6f}\n')
     the_file.close()
     print("Processing . . . ")
     time.sleep(2)
     print(f"Energy Consumption: {energy:.6f} Kwh")
-    if exists('SHA256/energy.txt'):
-        os.remove('SHA256/energy.txt')
+    if exists('sha256/energy.txt'):
+        os.remove('sha256/energy.txt')
 
 
 if __name__ == "__main__":

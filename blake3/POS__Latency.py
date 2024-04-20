@@ -7,10 +7,10 @@ import time
 import json
 import os
 
-from Library.blockchain import Blockchain
-from Library.vlidator import Validator
-from Blake3.Library.ProofOfStake import ProofOfStake
-from Library.block import Block
+from library.blockchain import Blockchain
+from library.vlidator import Validator
+from blake3.library.ProofOfStake import ProofOfStake
+from library.block import Block
 
 
 # --- This class defines our network.py of blockchain
@@ -50,12 +50,12 @@ class Network:
 
         latency = (end_time - start_time) / num_blocks
 
-        with open('Blake3/latency.txt', 'a') as the_file:
+        with open('blake3/latency.txt', 'a') as the_file:
             the_file.write(f'{latency:.6f}\n')
         the_file.close()
 
         if status:
-            f = open("Blake3/Latency(Blake3)_Blockchain.json", "a")
+            f = open("blake3/Latency(blake3)_Blockchain.json", "a")
             f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
             f.close()
 
@@ -80,7 +80,7 @@ class Network:
             # --- In here we check which one of validators is forger
             if forger == validator.name:
                 yield self.env.process(self.process_block(validator, block))
-                # --- Check how many time a validator selected as a forger
+                # --- Check how many times a validator selected as a forger
                 if validator.name in self.stakers.keys():
                     self.stakers[validator.name] += 1
                 else:
@@ -107,10 +107,10 @@ def main():
     # --- Number of iterations
     iteration = metrics[2]
     # ---
-    if exists('Blake3/latency_blake3.txt'):
-        os.remove('Blake3/latency_blake3.txt')
-    if exists('Blake3/Latency(Blake3)_Blockchain.json'):
-        os.remove('Blake3/Latency(Blake3)_Blockchain.json')
+    if exists('blake3/latency_blake3.txt'):
+        os.remove('blake3/latency_blake3.txt')
+    if exists('blake3/Latency(blake3)_Blockchain.json'):
+        os.remove('blake3/Latency(blake3)_Blockchain.json')
     # ---
     for i in range(0, iteration):
         network = Network(num_validators)
@@ -121,7 +121,7 @@ def main():
             status = False
             network.simulate(num_blocks, status)
     # ---
-    file1 = open('Blake3/latency.txt', 'r')
+    file1 = open('blake3/latency.txt', 'r')
     lines = file1.readlines()
     file1.close()
     # ---
@@ -131,14 +131,14 @@ def main():
         count += float(line.strip())
     # ---
     latency = count / iteration
-    with open('Blake3/latency_blake3.txt', 'a') as the_file:
+    with open('blake3/latency_blake3.txt', 'a') as the_file:
         the_file.write(f'{latency:.6f}\n')
     the_file.close()
     print("Processing . . . ")
     time.sleep(2)
     print(f"Latency per block: {latency:.6f} seconds")
-    if exists('Blake3/latency.txt'):
-        os.remove('Blake3/latency.txt')
+    if exists('blake3/latency.txt'):
+        os.remove('blake3/latency.txt')
 
 
 if __name__ == "__main__":

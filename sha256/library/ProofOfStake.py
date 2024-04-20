@@ -1,5 +1,5 @@
-from SHA256.Library.Lot import Lot
-from SHA256.Library.BlockchainUtils import BlockChainUtils
+from sha256.library.Lot import Lot
+from sha256.library.BlockchainUtils import BlockChainUtils
 
 
 class ProofOfStake():

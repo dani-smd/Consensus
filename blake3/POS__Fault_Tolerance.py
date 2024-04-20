@@ -7,10 +7,10 @@ import time
 import json
 import os
 
-from Library.blockchain import Blockchain
-from Library.vlidator import Validator
-from Blake3.Library.ProofOfStake import ProofOfStake
-from Library.block import Block
+from library.blockchain import Blockchain
+from library.vlidator import Validator
+from blake3.library.ProofOfStake import ProofOfStake
+from library.block import Block
 
 
 # --- This class defines our network.py of blockchain
@@ -46,7 +46,7 @@ class Network:
         self.env.run()
 
         # --- Create a file that contain of blocks
-        f = open("Blake3/Fault_Tolerance(Blake3)_Blockchain.json", "a")
+        f = open("blake3/Fault_Tolerance(blake3)_Blockchain.json", "a")
         f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
         f.close()
 
@@ -113,15 +113,15 @@ def main():
     # --- Number of blocks
     num_blocks = metrics[1]
     # ---
-    if exists('Blake3/fault_blake3.txt'):
-        os.remove('Blake3/fault_blake3.txt')
-    if exists('Blake3/Fault_Tolerance(Blake3)_Blockchain.json'):
-        os.remove('Blake3/Fault_Tolerance(Blake3)_Blockchain.json')
+    if exists('blake3/fault_blake3.txt'):
+        os.remove('blake3/fault_blake3.txt')
+    if exists('blake3/Fault_Tolerance(blake3)_Blockchain.json'):
+        os.remove('blake3/Fault_Tolerance(blake3)_Blockchain.json')
     # ---
     network = Network(num_validators)
     network.simulate(num_blocks)
     fault_tolerance, f = network.calculate_fault_tolerance()
-    with open('Blake3/fault_blake3.txt', 'a') as the_file:
+    with open('blake3/fault_blake3.txt', 'a') as the_file:
         the_file.write(f'{fault_tolerance * 100}\n')
     the_file.close()
     print("Processing . . . ")

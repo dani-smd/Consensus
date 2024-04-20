@@ -1,4 +1,4 @@
-from Blake3.Library.BlockchainUtils import BlockChainUtils
+from blake3.library.BlockchainUtils import BlockChainUtils
 
 
 class Lot():
