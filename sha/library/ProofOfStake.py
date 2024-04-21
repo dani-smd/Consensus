@@ -1,5 +1,5 @@
-from blake3.library.Lot import Lot
-from blake3.library.BlockchainUtils import BlockChainUtils
+from sha.library.Lot import Lot
+from sha.library.BlockchainUtils import BlockChainUtils
 
 
 class ProofOfStake():

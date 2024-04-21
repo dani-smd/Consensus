@@ -8,7 +8,7 @@ while True:
     print("# ---------------------------------------------- #")
     print("# ---------- Select one of these items --------- #")
     print("    1- Input Values")
-    print("    2- sha256")
+    print("    2- SHA256")
     print("    3- BLAKE3")
     print("    4- Plot")
     print("    5- Generate Transaction Pool Dataset")
@@ -33,7 +33,7 @@ while True:
         while True:
             os.system("cls")
             print("# --------- This is a simulator of POS --------- #")
-            print("# --------------------sha256-------------------- #")
+            print("# --------------------SHA256-------------------- #")
             print("# --------- Select one of these Metrics -------- #")
             print("    1- Latency")
             print("    2- Throughput")
@@ -45,24 +45,24 @@ while True:
 
             if item2 == "1":
                 os.system("cls")
-                print("# --- Latency selected for sha256 --- #")
+                print("# --- Latency selected for sha --- #")
                 # C:\Users\Danial\Desktop\Projects\Ms.Zeinab - Iraq\Sybil Attack\.venv\Scripts\python.exe
-                os.system("python sha256/POS__Latency.py")
+                os.system("python sha/POS__Latency.py")
                 input("Press Enter to continue...")
             elif item2 == "2":
                 os.system("cls")
-                print("# --- Throughput selected for sha256 --- #")
-                os.system("python sha256/POS__Throughput.py")
+                print("# --- Throughput selected for sha --- #")
+                os.system("python sha/POS__Throughput.py")
                 input("Press Enter to continue...")
             elif item2 == "3":
                 os.system("cls")
-                print("# --- Fault Tolerance selected for sha256 --- #")
-                os.system("python sha256/POS__Fault_Tolerance.py")
+                print("# --- Fault Tolerance selected for sha --- #")
+                os.system("python sha/POS__Fault_Tolerance.py")
                 input("Press Enter to continue...")
             elif item2 == "4":
                 os.system("cls")
-                print("# --- Energy Consumption selected for sha256 --- #")
-                os.system("python sha256/POS__Energy_Consumption.py")
+                print("# --- Energy Consumption selected for sha --- #")
+                os.system("python sha/POS__Energy_Consumption.py")
                 input("Press Enter to continue...")
             elif item2 == "5":
                 os.system("cls")
@@ -85,22 +85,22 @@ while True:
             if item2 == "1":
                 os.system("cls")
                 print("# --- Latency selected for BLAKE3 --- #")
-                os.system("python blake3/POS__Latency.py")
+                os.system("python blake/POS__Latency.py")
                 input("Press Enter to continue...")
             elif item2 == "2":
                 os.system("cls")
                 print("# --- Throughput selected for BLAKE3 --- #")
-                os.system("python blake3/POS__Throughput.py")
+                os.system("python blake/POS__Throughput.py")
                 input("Press Enter to continue...")
             elif item2 == "3":
                 os.system("cls")
                 print("# --- Fault Tolerance selected for BLAKE3 --- #")
-                os.system("python blake3/POS__Fault_Tolerance.py")
+                os.system("python blake/POS__Fault_Tolerance.py")
                 input("Press Enter to continue...")
             elif item2 == "4":
                 os.system("cls")
                 print("# --- Energy Consumption selected for BLAKE3 --- #")
-                os.system("python blake3/POS__Energy_Consumption.py")
+                os.system("python blake/POS__Energy_Consumption.py")
                 input("Press Enter to continue...")
             elif item2 == "5":
                 os.system("cls")
@@ -108,11 +108,11 @@ while True:
             break
     elif item == "4":
         os.system("cls")
-        # --- blake3
-        file1 = open('blake3/files/energy_blake3.txt', 'r')
-        file2 = open('blake3/files/fault_blake3.txt', 'r')
-        file3 = open('blake3/files/throughput_Blake3.txt', 'r')
-        file4 = open('blake3/files/latency_blake3.txt', 'r')
+        # --- blake
+        file1 = open('blake/files/energy_blake3.txt', 'r')
+        file2 = open('blake/files/fault_blake3.txt', 'r')
+        file3 = open('blake/files/throughput_Blake3.txt', 'r')
+        file4 = open('blake/files/latency_blake3.txt', 'r')
         lines1 = file1.readlines()
         lines2 = file2.readlines()
         lines3 = file3.readlines()
@@ -130,11 +130,11 @@ while True:
         for line in lines4:
             blake3.append(float(line.strip()))
         file4.close()
-        # --- sha256
-        file1 = open('sha256/files/energy_sha256.txt', 'r')
-        file2 = open('sha256/files/fault_sha256.txt', 'r')
-        file3 = open('sha256/files/latency_sha256.txt', 'r')
-        file4 = open('sha256/files/throughput_sha256.txt', 'r')
+        # --- sha
+        file1 = open('sha/files/energy_sha256.txt', 'r')
+        file2 = open('sha/files/fault_sha256.txt', 'r')
+        file3 = open('sha/files/latency_sha256.txt', 'r')
+        file4 = open('sha/files/throughput_sha256.txt', 'r')
         lines1 = file1.readlines()
         lines2 = file2.readlines()
         lines3 = file3.readlines()
@@ -161,7 +161,7 @@ while True:
         # # --- Fault Tolerance
         y_fault = [blake3[1], sha256[1]]
         # --- Show Plot
-        x_axis = ['blake3', 'sha256']
+        x_axis = ['blake', 'sha']
 
         colors = ['purple', 'teal']
 

@@ -1,4 +1,4 @@
-from sha256.library.BlockchainUtils import BlockChainUtils
+from blake.library.BlockchainUtils import BlockChainUtils
 
 
 class Lot():

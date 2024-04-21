@@ -5,21 +5,12 @@ import random
 import simpy
 import time
 import json
-import csv
 import os
 
 from library.blockchain import Blockchain
 from library.vlidator import Validator
-from blake3.library.ProofOfStake import ProofOfStake
+from blake.library.ProofOfStake import ProofOfStake
 from library.block import Block
-
-
-class Transaction:
-    def __init__(self, tx_id, sender, recipient, amount):
-        self.tx_id = tx_id
-        self.sender = sender
-        self.recipient = recipient
-        self.amount = amount
 
 
 # --- This class defines our network.py of blockchain
@@ -42,11 +33,10 @@ class Network:
                 self.validators[i].add_peer(self.validators[j - 1])
                 self.validators[j - 1].add_peer(self.validators[i])
 
-    # --- This function simulate our consensus algorithm and calculate the Latency
-    def simulate(self, num_blocks, status):
-        start_time = time.time()
+    # --- This function simulate our consensus algorithm and calculate the Fault
+    def simulate(self, num_blocks):
 
-        processed_blocks = 0
+        start_time = time.time()
 
         # --- Create and schedule the arrival of new blocks
         for i in range(num_blocks):
@@ -55,69 +45,61 @@ class Network:
         # --- Run the simulation
         self.env.run()
 
-        end_time = time.time()
-
-        latency = (end_time - start_time) / num_blocks
-
-        with open('blake3/latency.txt', 'a') as the_file:
-            the_file.write(f'{latency:.6f}\n')
-        the_file.close()
-
-        if status:
-            f = open("blake3/Latency(blake3)_Blockchain.json", "a")
-            f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
-            f.close()
+        # --- Create a file that contain of blocks
+        f = open("blake/Fault_Tolerance(blake)_Blockchain.json", "a")
+        f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
+        f.close()
 
     # --- This function make a random string
-    def get_random_string(self, length):
+    @staticmethod
+    def get_random_string(length):
         letters = string.ascii_lowercase
         result_string = ''.join(random.choice(letters) for i in range(length))
         return result_string
 
-    @staticmethod
-    def read_transactions_from_csv():
-        transaction_pool = []
-        with open('transaction_pool.csv', 'r', newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                transaction = Transaction(
-                    int(row['Transaction ID']),
-                    row['Sender'],
-                    row['Recipient'],
-                    int(row['Amount'])
-                )
-                transaction_pool.append(transaction)
-        return transaction_pool
-
     def arrive_block(self, index):
-        transaction_pool = self.read_transactions_from_csv()
-        selected_transactions = random.sample(transaction_pool, 10)
         # --- Simulate the arrival of new blocks and their processing by validators
-        block = Block(index, time.time(), selected_transactions, "")
+        block = Block(index, time.time(), f"Block data {index}", "")
         block.nonce = random.randint(0, 1000)  # --- Assign a random nonce value
 
         # --- In this part we will use Proof Of stake to select a forger
         pos = ProofOfStake()
         for validator in self.validators:
             pos.update(validator.name, validator.stake)
+
         # --- When a forger selected it goes to validate the block and then put it to the chain
         forger = pos.forger(self.get_random_string(index))
         for validator in self.validators:
             # --- In here we check which one of validators is forger
             if forger == validator.name:
                 yield self.env.process(self.process_block(validator, block))
-                # --- Check how many times a validator selected as a forger
-                if validator.name in self.stakers.keys():
-                    self.stakers[validator.name] += 1
-                else:
-                    self.stakers[validator.name] = 1
 
     def process_block(self, validator, block):
         # --- Simulate the validation of blocks by validators
-        # sim_time = random.random()
         sim_time = 0.5
         yield self.env.timeout(sim_time)  # --- Simulate some delay
         validator.receive_block(block)  # --- Process the block and propagate to peers
+
+    # --- This function calculates a threshold for fault tolerance
+    def calculate_fault_tolerance(self):
+        # --- Sort by stake in descending order
+        self.validators.sort(key=lambda x: -x.stake)
+        total_nodes = len(self.validators)
+        sorted_validators = sorted(self.validators, key=lambda v: v.stake, reverse=True)
+        stake_sum = sum(v.stake for v in sorted_validators)
+        faulty_nodes = 0
+        cumulative_stake = 0
+        for i, validator in enumerate(sorted_validators):
+            cumulative_stake += validator.stake
+            if cumulative_stake >= stake_sum * 0.3:
+                faulty_nodes = i + 1
+                break
+
+        # --- Calculate fault tolerance
+        not_faulty_nodes = total_nodes - faulty_nodes
+        fault_tolerance = not_faulty_nodes / total_nodes
+        f = (2 * faulty_nodes) + 1
+        return fault_tolerance, f
 
 
 def main():
@@ -130,41 +112,22 @@ def main():
     num_validators = metrics[0]
     # --- Number of blocks
     num_blocks = metrics[1]
-    # --- Number of iterations
-    iteration = metrics[2]
     # ---
-    if exists('blake3/latency_blake3.txt'):
-        os.remove('blake3/latency_blake3.txt')
-    if exists('blake3/Latency(blake3)_Blockchain.json'):
-        os.remove('blake3/Latency(blake3)_Blockchain.json')
+    if exists('blake/fault_blake3.txt'):
+        os.remove('blake/fault_blake3.txt')
+    if exists('blake/Fault_Tolerance(blake)_Blockchain.json'):
+        os.remove('blake/Fault_Tolerance(blake)_Blockchain.json')
     # ---
-    for i in range(0, iteration):
-        network = Network(num_validators)
-        if i == 0:
-            status = True
-            network.simulate(num_blocks, status)
-        else:
-            status = False
-            network.simulate(num_blocks, status)
-    # ---
-    file1 = open('blake3/latency.txt', 'r')
-    lines = file1.readlines()
-    file1.close()
-    # ---
-    count = 0
-    # Strips the newline character
-    for line in lines:
-        count += float(line.strip())
-    # ---
-    latency = count / iteration
-    with open('blake3/latency_blake3.txt', 'a') as the_file:
-        the_file.write(f'{latency:.6f}\n')
+    network = Network(num_validators)
+    network.simulate(num_blocks)
+    fault_tolerance, f = network.calculate_fault_tolerance()
+    with open('blake/fault_blake3.txt', 'a') as the_file:
+        the_file.write(f'{fault_tolerance * 100}\n')
     the_file.close()
     print("Processing . . . ")
     time.sleep(2)
-    print(f"Latency per block: {latency:.6f} seconds")
-    if exists('blake3/latency.txt'):
-        os.remove('blake3/latency.txt')
+    print(f"Fault tolerance: {fault_tolerance * 100} %")
+    print(f"The Result Of 2F+1 Is Equal = {f}, It Means you Need At Least {f} Node For The POS Consensus To Work!")
 
 
 if __name__ == "__main__":

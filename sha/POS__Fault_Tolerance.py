@@ -9,7 +9,7 @@ import os
 
 from library.blockchain import Blockchain
 from library.vlidator import Validator
-from sha256.library.ProofOfStake import ProofOfStake
+from sha.library.ProofOfStake import ProofOfStake
 from library.block import Block
 
 
@@ -17,26 +17,26 @@ from library.block import Block
 class Network:
     # --- This function initialize the network.py
     def __init__(self, num_validators):
+        self.stakers = {}
         self.env = simpy.Environment()
         self.blockchain = Blockchain()
         self.validators = [
             Validator(self.env, f"Validator {i}", random.randint(1, 10), self.blockchain, f"Address Node {i}") for i in
             range(num_validators)]
-        self.num_validators = num_validators
         self.add_connections()
 
     # --- This function make connections between nodes
     def add_connections(self):
         # --- Connect validators in a mesh network.py
         for i in range(len(self.validators)):
-            for j in range(i + 1, len(self.validators)):
-                self.validators[i].add_peer(self.validators[j])
-                self.validators[j].add_peer(self.validators[i])
+            for j in range(i + 1, len(self.validators) + 1):
+                self.validators[i].add_peer(self.validators[j - 1])
+                self.validators[j - 1].add_peer(self.validators[i])
 
-    # --- This function simulate our consensus algorithm and calculate the Latency
-    def simulate(self, num_blocks, avg_power, num_nodes, status):
+    # --- This function simulate our consensus algorithm and calculate the Fault
+    def simulate(self, num_blocks):
+
         start_time = time.time()
-        processed_blocks = 0
 
         # --- Create and schedule the arrival of new blocks
         for i in range(num_blocks):
@@ -45,26 +45,10 @@ class Network:
         # --- Run the simulation
         self.env.run()
 
-        end_time = time.time()
-
-        elapsed_time = end_time - start_time
-
-        processed_blocks = len(self.blockchain.chain)
-
-        throughput = processed_blocks / elapsed_time
-
-        total_time = elapsed_time * num_nodes  # --- total running time of all nodes
-
-        energy = (avg_power / 1000) * total_time  # --- energy consumption in kilowatt-hours (kWh)
-
-        with open('sha256/energy.txt', 'a') as the_file:
-            the_file.write(f'{energy:.6f}\n')
-        the_file.close()
-
-        if status:
-            f = open("sha256/Energy_Consumption(sha256)_Blockchain.json", "a")
-            f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
-            f.close()
+        # --- Create a file that contain of blocks
+        f = open("sha/Fault_Tolerance(sha)_Blockchain.json", "a")
+        f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
+        f.close()
 
     # --- This function make a random string
     @staticmethod
@@ -97,6 +81,30 @@ class Network:
         yield self.env.timeout(sim_time)  # --- Simulate some delay
         validator.receive_block(block)  # --- Process the block and propagate to peers
 
+    # --- This function calculates a threshold for fault tolerance
+    def calculate_fault_tolerance(self):
+        # --- Sort by stake in descending order
+        self.validators.sort(key=lambda x: -x.stake)
+        total_nodes = len(self.validators)
+        sorted_validators = sorted(self.validators, key=lambda v: v.stake, reverse=True)
+        stake_sum = sum(v.stake for v in self.validators)
+        # for i in range(total_nodes):
+        #     if self.validators[i].stake * (total_nodes - i) < stake_sum:
+        #         faulty_nodes += 1
+        faulty_nodes = 0
+        cumulative_stake = 0
+        for i, validator in enumerate(sorted_validators):
+            cumulative_stake += validator.stake
+            if cumulative_stake >= stake_sum * 0.3:
+                faulty_nodes = i + 1
+                break
+
+        # --- Calculate fault tolerance
+        not_faulty_nodes = total_nodes - faulty_nodes
+        fault_tolerance = not_faulty_nodes / total_nodes
+        f = (2 * faulty_nodes) + 1
+        return fault_tolerance, f
+
 
 def main():
     file1 = open('input.txt', 'r')
@@ -108,43 +116,22 @@ def main():
     num_validators = metrics[0]
     # --- Number of blocks
     num_blocks = metrics[1]
-    # --- Number of iterations
-    iteration = metrics[2]
-    # --- Average power consumption of a single node in watts
-    avg_power = metrics[3]
     # ---
-    if exists('sha256/energy_sha256.txt'):
-        os.remove('sha256/energy_sha256.txt')
-    if exists('sha256/Energy_Consumption(sha256)_Blockchain.json'):
-        os.remove('sha256/Energy_Consumption(sha256)_Blockchain.json')
+    if exists('sha/fault_sha256.txt'):
+        os.remove('sha/fault_sha256.txt')
+    if exists('sha/Fault_Tolerance(sha)_Blockchain.json'):
+        os.remove('sha/Fault_Tolerance(sha)_Blockchain.json')
     # ---
-    for i in range(0, iteration):
-        network = Network(num_validators)
-        if i == 0:
-            status = True
-            network.simulate(num_blocks, avg_power, num_validators, status)
-        else:
-            status = False
-            network.simulate(num_blocks, avg_power, num_validators, status)
-    # ---
-    file1 = open('sha256/energy.txt', 'r')
-    lines = file1.readlines()
-    file1.close()
-    # ---
-    count = 0
-    # Strips the newline character
-    for line in lines:
-        count += float(line.strip())
-    # ---
-    energy = count / iteration
-    with open('sha256/energy_sha256.txt', 'a') as the_file:
-        the_file.write(f'{energy:.6f}\n')
+    network = Network(num_validators)
+    network.simulate(num_blocks)
+    fault_tolerance, f = network.calculate_fault_tolerance()
+    with open('sha/fault_sha256.txt', 'a') as the_file:
+        the_file.write(f'{fault_tolerance * 100}\n')
     the_file.close()
     print("Processing . . . ")
     time.sleep(2)
-    print(f"Energy Consumption: {energy:.6f} Kwh")
-    if exists('sha256/energy.txt'):
-        os.remove('sha256/energy.txt')
+    print(f"Fault tolerance: {fault_tolerance * 100} %")
+    print(f"The Result Of 2F+1 Is Equal = {f}, It Means you Need At Least {f} Node For The POS Consensus To Work!")
 
 
 if __name__ == "__main__":

@@ -9,19 +9,19 @@ import os
 
 from library.blockchain import Blockchain
 from library.vlidator import Validator
-from blake3.library.ProofOfStake import ProofOfStake
+from sha.library.ProofOfStake import ProofOfStake
 from library.block import Block
 
 
 # --- This class defines our network.py of blockchain
 class Network:
-
     # --- This function initialize the network.py
     def __init__(self, num_validators):
         self.env = simpy.Environment()
         self.blockchain = Blockchain()
-        self.validators = [Validator(self.env, f"Validator {i}", random.randint(1, 10), self.blockchain,
-                                     f"Address Node {i}") for i in range(num_validators)]
+        self.validators = [
+            Validator(self.env, f"Validator {i}", random.randint(1, 10), self.blockchain, f"Address Node {i}") for i in
+            range(num_validators)]
         self.num_validators = num_validators
         self.add_connections()
 
@@ -35,8 +35,8 @@ class Network:
 
     # --- This function simulate our consensus algorithm and calculate the Latency
     def simulate(self, num_blocks, avg_power, num_nodes, status):
-
         start_time = time.time()
+        processed_blocks = 0
 
         # --- Create and schedule the arrival of new blocks
         for i in range(num_blocks):
@@ -49,16 +49,20 @@ class Network:
 
         elapsed_time = end_time - start_time
 
-        total_time = elapsed_time * num_nodes       # --- total running time of all nodes
+        processed_blocks = len(self.blockchain.chain)
 
-        energy = (avg_power / 1000) * total_time    # --- energy consumption in kilowatt-hours (kWh)
+        throughput = processed_blocks / elapsed_time
 
-        with open('blake3/energy.txt', 'a') as the_file:
+        total_time = elapsed_time * num_nodes  # --- total running time of all nodes
+
+        energy = (avg_power / 1000) * total_time  # --- energy consumption in kilowatt-hours (kWh)
+
+        with open('sha/energy.txt', 'a') as the_file:
             the_file.write(f'{energy:.6f}\n')
         the_file.close()
 
         if status:
-            f = open("blake3/Energy_Consumption(blake3)_Blockchain.json", "a")
+            f = open("sha/Energy_Consumption(sha)_Blockchain.json", "a")
             f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
             f.close()
 
@@ -70,7 +74,6 @@ class Network:
         return result_string
 
     def arrive_block(self, index):
-
         # --- Simulate the arrival of new blocks and their processing by validators
         block = Block(index, time.time(), f"Block data {index}", "")
         block.nonce = random.randint(0, 1000)  # --- Assign a random nonce value
@@ -110,10 +113,10 @@ def main():
     # --- Average power consumption of a single node in watts
     avg_power = metrics[3]
     # ---
-    if exists('blake3/energy_blake3.txt'):
-        os.remove('blake3/energy_blake3.txt')
-    if exists('blake3/Energy_Consumption(blake3)_Blockchain.json'):
-        os.remove('blake3/Energy_Consumption(blake3)_Blockchain.json')
+    if exists('sha/energy_sha256.txt'):
+        os.remove('sha/energy_sha256.txt')
+    if exists('sha/Energy_Consumption(sha)_Blockchain.json'):
+        os.remove('sha/Energy_Consumption(sha)_Blockchain.json')
     # ---
     for i in range(0, iteration):
         network = Network(num_validators)
@@ -124,7 +127,7 @@ def main():
             status = False
             network.simulate(num_blocks, avg_power, num_validators, status)
     # ---
-    file1 = open('blake3/energy.txt', 'r')
+    file1 = open('sha/energy.txt', 'r')
     lines = file1.readlines()
     file1.close()
     # ---
@@ -134,14 +137,14 @@ def main():
         count += float(line.strip())
     # ---
     energy = count / iteration
-    with open('blake3/energy_blake3.txt', 'a') as the_file:
+    with open('sha/energy_sha256.txt', 'a') as the_file:
         the_file.write(f'{energy:.6f}\n')
     the_file.close()
     print("Processing . . . ")
     time.sleep(2)
     print(f"Energy Consumption: {energy:.6f} Kwh")
-    if exists('blake3/energy.txt'):
-        os.remove('blake3/energy.txt')
+    if exists('sha/energy.txt'):
+        os.remove('sha/energy.txt')
 
 
 if __name__ == "__main__":
