@@ -5,12 +5,21 @@ import random
 import simpy
 import time
 import json
+import csv
 import os
 
 from library.blockchain import Blockchain
 from library.vlidator import Validator
 from blake3.library.ProofOfStake import ProofOfStake
 from library.block import Block
+
+
+class Transaction:
+    def __init__(self, tx_id, sender, recipient, amount):
+        self.tx_id = tx_id
+        self.sender = sender
+        self.recipient = recipient
+        self.amount = amount
 
 
 # --- This class defines our network.py of blockchain
@@ -65,9 +74,26 @@ class Network:
         result_string = ''.join(random.choice(letters) for i in range(length))
         return result_string
 
+    @staticmethod
+    def read_transactions_from_csv():
+        transaction_pool = []
+        with open('transaction_pool.csv', 'r', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                transaction = Transaction(
+                    int(row['Transaction ID']),
+                    row['Sender'],
+                    row['Recipient'],
+                    int(row['Amount'])
+                )
+                transaction_pool.append(transaction)
+        return transaction_pool
+
     def arrive_block(self, index):
+        transaction_pool = self.read_transactions_from_csv()
+        selected_transactions = random.sample(transaction_pool, 10)
         # --- Simulate the arrival of new blocks and their processing by validators
-        block = Block(index, time.time(), f"Block data {index}", "")
+        block = Block(index, time.time(), selected_transactions, "")
         block.nonce = random.randint(0, 1000)  # --- Assign a random nonce value
 
         # --- In this part we will use Proof Of stake to select a forger
