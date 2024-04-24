@@ -7,10 +7,10 @@ import time
 import json
 import os
 
-from library.blockchain import Blockchain
-from library.vlidator import Validator
+from blake.library.blockchain import Blockchain
+from blake.library.vlidator import Validator
 from blake.library.ProofOfStake import ProofOfStake
-from library.block import Block
+from blake.library.block import Block
 
 
 # --- This class defines our network.py of blockchain
@@ -100,35 +100,3 @@ class Network:
         fault_tolerance = not_faulty_nodes / total_nodes
         f = (2 * faulty_nodes) + 1
         return fault_tolerance, f
-
-
-def main():
-    file1 = open('input.txt', 'r')
-    lines1 = file1.readlines()
-    metrics = []
-    for line in lines1:
-        metrics.append(int(line.strip()))
-    # --- Number of validators
-    num_validators = metrics[0]
-    # --- Number of blocks
-    num_blocks = metrics[1]
-    # ---
-    if exists('blake/fault_blake3.txt'):
-        os.remove('blake/fault_blake3.txt')
-    if exists('blake/Fault_Tolerance(blake)_Blockchain.json'):
-        os.remove('blake/Fault_Tolerance(blake)_Blockchain.json')
-    # ---
-    network = Network(num_validators)
-    network.simulate(num_blocks)
-    fault_tolerance, f = network.calculate_fault_tolerance()
-    with open('blake/fault_blake3.txt', 'a') as the_file:
-        the_file.write(f'{fault_tolerance * 100}\n')
-    the_file.close()
-    print("Processing . . . ")
-    time.sleep(2)
-    print(f"Fault tolerance: {fault_tolerance * 100} %")
-    print(f"The Result Of 2F+1 Is Equal = {f}, It Means you Need At Least {f} Node For The POS Consensus To Work!")
-
-
-if __name__ == "__main__":
-    main()

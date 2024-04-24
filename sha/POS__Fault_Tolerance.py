@@ -7,10 +7,10 @@ import json
 import time
 import os
 
-from library.blockchain import Blockchain
-from library.vlidator import Validator
+from sha.library.blockchain import Blockchain
+from sha.library.vlidator import Validator
 from sha.library.ProofOfStake import ProofOfStake
-from library.block import Block
+from sha.library.block import Block
 
 
 # --- This class defines our network.py of blockchain
@@ -104,35 +104,3 @@ class Network:
         fault_tolerance = not_faulty_nodes / total_nodes
         f = (2 * faulty_nodes) + 1
         return fault_tolerance, f
-
-
-def main():
-    file1 = open('input.txt', 'r')
-    lines1 = file1.readlines()
-    metrics = []
-    for line in lines1:
-        metrics.append(int(line.strip()))
-    # --- Number of validators
-    num_validators = metrics[0]
-    # --- Number of blocks
-    num_blocks = metrics[1]
-    # ---
-    if exists('sha/fault_sha256.txt'):
-        os.remove('sha/fault_sha256.txt')
-    if exists('sha/Fault_Tolerance(sha)_Blockchain.json'):
-        os.remove('sha/Fault_Tolerance(sha)_Blockchain.json')
-    # ---
-    network = Network(num_validators)
-    network.simulate(num_blocks)
-    fault_tolerance, f = network.calculate_fault_tolerance()
-    with open('sha/fault_sha256.txt', 'a') as the_file:
-        the_file.write(f'{fault_tolerance * 100}\n')
-    the_file.close()
-    print("Processing . . . ")
-    time.sleep(2)
-    print(f"Fault tolerance: {fault_tolerance * 100} %")
-    print(f"The Result Of 2F+1 Is Equal = {f}, It Means you Need At Least {f} Node For The POS Consensus To Work!")
-
-
-if __name__ == "__main__":
-    main()

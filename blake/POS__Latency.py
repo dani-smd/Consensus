@@ -8,10 +8,10 @@ import json
 import csv
 import os
 
-from library.blockchain import Blockchain
-from library.vlidator import Validator
+from blake.library.blockchain import Blockchain
+from blake.library.vlidator import Validator
 from blake.library.ProofOfStake import ProofOfStake
-from library.block import Block
+from blake.library.block import Block
 
 
 class Transaction:
@@ -118,54 +118,3 @@ class Network:
         sim_time = 0.5
         yield self.env.timeout(sim_time)  # --- Simulate some delay
         validator.receive_block(block)  # --- Process the block and propagate to peers
-
-
-def main():
-    file1 = open('input.txt', 'r')
-    lines1 = file1.readlines()
-    metrics = []
-    for line in lines1:
-        metrics.append(int(line.strip()))
-    # --- Number of validators
-    num_validators = metrics[0]
-    # --- Number of blocks
-    num_blocks = metrics[1]
-    # --- Number of iterations
-    iteration = metrics[2]
-    # ---
-    if exists('blake/latency_blake3.txt'):
-        os.remove('blake/latency_blake3.txt')
-    if exists('blake/Latency(blake)_Blockchain.json'):
-        os.remove('blake/Latency(blake)_Blockchain.json')
-    # ---
-    for i in range(0, iteration):
-        network = Network(num_validators)
-        if i == 0:
-            status = True
-            network.simulate(num_blocks, status)
-        else:
-            status = False
-            network.simulate(num_blocks, status)
-    # ---
-    file1 = open('blake/latency.txt', 'r')
-    lines = file1.readlines()
-    file1.close()
-    # ---
-    count = 0
-    # Strips the newline character
-    for line in lines:
-        count += float(line.strip())
-    # ---
-    latency = (count / iteration) / 10
-    with open('blake/latency_blake3.txt', 'a') as the_file:
-        the_file.write(f'{latency:.6f}\n')
-    the_file.close()
-    print("Processing . . . ")
-    time.sleep(2)
-    print(f"Latency per block: {latency:.6f} seconds")
-    if exists('blake/latency.txt'):
-        os.remove('blake/latency.txt')
-
-
-if __name__ == "__main__":
-    main()
