@@ -57,12 +57,12 @@ class Network:
 
         energy = (avg_power / 1000) * total_time  # --- energy consumption in kilowatt-hours (kWh)
 
-        with open('sha/energy.txt', 'a') as the_file:
+        with open('sha/files/energy.txt', 'a') as the_file:
             the_file.write(f'{energy:.6f}\n')
         the_file.close()
 
         if status:
-            f = open("sha/Energy_Consumption(sha)_Blockchain.json", "a")
+            f = open("sha/files/Energy_Consumption(sha)_Blockchain.json", "a")
             f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
             f.close()
 

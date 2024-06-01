@@ -46,7 +46,7 @@ class Network:
         self.env.run()
 
         # --- Create a file that contain of blocks
-        f = open("blake/Fault_Tolerance(blake)_Blockchain.json", "a")
+        f = open("blake/files/Fault_Tolerance(blake)_Blockchain.json", "a")
         f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
         f.close()
 

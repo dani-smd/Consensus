@@ -59,12 +59,12 @@ class Network:
 
         latency = (end_time - start_time) / num_blocks
 
-        with open('blake/latency.txt', 'a') as the_file:
+        with open('blake/files/latency.txt', 'a') as the_file:
             the_file.write(f'{latency:.6f}\n')
         the_file.close()
 
         if status:
-            f = open("blake/Latency(blake)_Blockchain.json", "a")
+            f = open("blake/files/Latency(blake)_Blockchain.json", "a")
             f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
             f.close()
 

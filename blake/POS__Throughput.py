@@ -52,12 +52,12 @@ class Network:
 
         throughput = processed_blocks / elapsed_time
 
-        with open('blake/throughput.txt', 'a') as the_file:
+        with open('blake/files/throughput.txt', 'a') as the_file:
             the_file.write(f'{throughput:.6f}\n')
         the_file.close()
 
         if status:
-            f = open("blake/Throughput(blake)_Blockchain.json", "a")
+            f = open("blake/files/Throughput(blake)_Blockchain.json", "a")
             f.write(json.dumps(json.loads(jsonpickle.encode(self.blockchain.chain)), indent=2))
             f.close()
 
