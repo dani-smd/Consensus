@@ -101,7 +101,9 @@ class Network:
         for validator in self.validators:
             pos.update(validator.name, validator.stake)
         # --- When a forger selected it goes to validate the block and then put it to the chain
-        forger = pos.forger(self.get_random_string(index))
+        num_simulations = 10
+        forger = pos.monte_carlo_forger(num_simulations, self.get_random_string(index))
+
         for validator in self.validators:
             # --- In here we check which one of validators is forger
             if forger == validator.name:
