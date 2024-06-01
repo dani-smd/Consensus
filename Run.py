@@ -70,10 +70,10 @@ while True:
                 # --- Number of iterations
                 iteration = metrics[2]
                 # ---
-                if exists('sha/latency_sha256.txt'):
-                    os.remove('sha/latency_sha256.txt')
-                if exists('sha/Latency(sha)_Blockchain.json'):
-                    os.remove('sha/Latency(sha)_Blockchain.json')
+                if exists('sha/files/latency_sha256.txt'):
+                    os.remove('sha/files/latency_sha256.txt')
+                if exists('sha/files/Latency(sha)_Blockchain.json'):
+                    os.remove('sha/files/Latency(sha)_Blockchain.json')
                 # ---
                 for i in range(0, iteration):
                     network = latencyNetwork(num_validators)
@@ -84,7 +84,7 @@ while True:
                         status = False
                         network.simulate(num_blocks, status)
                 # ---
-                result = open('sha/latency.txt', 'r')
+                result = open('sha/files/latency.txt', 'r')
                 result_lines = result.readlines()
                 result.close()
                 # ---
@@ -94,14 +94,14 @@ while True:
                     count += float(result_line.strip())
                 # ---
                 latency = (count / iteration) / 10
-                with open('sha/latency_sha256.txt', 'a') as the_file:
+                with open('sha/files/latency_sha256.txt', 'a') as the_file:
                     the_file.write(f'{latency:.6f}\n')
                 the_file.close()
                 print("Processing . . . ")
                 time.sleep(2)
                 print(f"Latency per block: {latency:.6f} seconds")
-                if exists('sha/latency.txt'):
-                    os.remove('sha/latency.txt')
+                if exists('sha/files/latency.txt'):
+                    os.remove('sha/files/latency.txt')
                 # os.system("python sha/POS__Latency.py")
                 input("Press Enter to continue...")
             elif item2 == "2":
@@ -119,10 +119,10 @@ while True:
                 # --- Number of iterations
                 iteration = metrics[2]
                 # ---
-                if exists('sha/throughput_sha256.txt'):
-                    os.remove('sha/throughput_sha256.txt')
-                if exists('sha/Throughput(sha)_Blockchain.json'):
-                    os.remove('sha/Throughput(sha)_Blockchain.json')
+                if exists('sha/files/throughput_sha256.txt'):
+                    os.remove('sha/files/throughput_sha256.txt')
+                if exists('sha/files/Throughput(sha)_Blockchain.json'):
+                    os.remove('sha/files/Throughput(sha)_Blockchain.json')
                 # ---
                 for i in range(0, iteration):
                     network = throughputNetwork(num_validators)
@@ -133,7 +133,7 @@ while True:
                         status = False
                         network.simulate(num_blocks, status)
                 # ---
-                file1 = open('sha/throughput.txt', 'r')
+                file1 = open('sha/files/throughput.txt', 'r')
                 lines = file1.readlines()
                 file1.close()
                 # ---
@@ -143,14 +143,14 @@ while True:
                     count += float(line.strip())
                 # ---
                 throughput = count / iteration
-                with open('sha/throughput_sha256.txt', 'a') as the_file:
+                with open('sha/files/throughput_sha256.txt', 'a') as the_file:
                     the_file.write(f'{throughput:.6f}\n')
                 the_file.close()
                 print("Processing . . . ")
                 time.sleep(2)
                 print(f"Throughput: {throughput:.6f} transactions per second")
-                if exists('sha/throughput.txt'):
-                    os.remove('sha/throughput.txt')
+                if exists('sha/files/throughput.txt'):
+                    os.remove('sha/files/throughput.txt')
                 input("Press Enter to continue...")
             elif item2 == "3":
                 os.system("cls")
@@ -165,15 +165,15 @@ while True:
                 # --- Number of blocks
                 num_blocks = metrics[1]
                 # ---
-                if exists('sha/fault_sha256.txt'):
-                    os.remove('sha/fault_sha256.txt')
-                if exists('sha/Fault_Tolerance(sha)_Blockchain.json'):
-                    os.remove('sha/Fault_Tolerance(sha)_Blockchain.json')
+                if exists('sha/files/fault_sha256.txt'):
+                    os.remove('sha/files/fault_sha256.txt')
+                if exists('sha/files/Fault_Tolerance(sha)_Blockchain.json'):
+                    os.remove('sha/files/Fault_Tolerance(sha)_Blockchain.json')
                 # ---
                 network = faultNetwork(num_validators)
                 network.simulate(num_blocks)
                 fault_tolerance, f = network.calculate_fault_tolerance()
-                with open('sha/fault_sha256.txt', 'a') as the_file:
+                with open('sha/files/fault_sha256.txt', 'a') as the_file:
                     the_file.write(f'{fault_tolerance * 100}\n')
                 the_file.close()
                 print("Processing . . . ")
@@ -199,10 +199,10 @@ while True:
                 # --- Average power consumption of a single node in watts
                 avg_power = metrics[3]
                 # ---
-                if exists('sha/energy_sha256.txt'):
-                    os.remove('sha/energy_sha256.txt')
-                if exists('sha/Energy_Consumption(sha)_Blockchain.json'):
-                    os.remove('sha/Energy_Consumption(sha)_Blockchain.json')
+                if exists('sha/files/energy_sha256.txt'):
+                    os.remove('sha/files/energy_sha256.txt')
+                if exists('sha/files/Energy_Consumption(sha)_Blockchain.json'):
+                    os.remove('sha/files/Energy_Consumption(sha)_Blockchain.json')
                 # ---
                 for i in range(0, iteration):
                     network = energyNetwork(num_validators)
@@ -213,7 +213,7 @@ while True:
                         status = False
                         network.simulate(num_blocks, avg_power, num_validators, status)
                 # ---
-                file1 = open('sha/energy.txt', 'r')
+                file1 = open('sha/files/energy.txt', 'r')
                 lines = file1.readlines()
                 file1.close()
                 # ---
@@ -223,14 +223,14 @@ while True:
                     count += float(line.strip())
                 # ---
                 energy = count / iteration
-                with open('sha/energy_sha256.txt', 'a') as the_file:
+                with open('sha/files/energy_sha256.txt', 'a') as the_file:
                     the_file.write(f'{energy:.6f}\n')
                 the_file.close()
                 print("Processing . . . ")
                 time.sleep(2)
                 print(f"Energy Consumption: {energy:.6f} Kwh")
-                if exists('sha/energy.txt'):
-                    os.remove('sha/energy.txt')
+                if exists('sha/files/energy.txt'):
+                    os.remove('sha/files/energy.txt')
                 input("Press Enter to continue...")
             elif item2 == "5":
                 os.system("cls")
@@ -265,10 +265,10 @@ while True:
                 # --- Number of iterations
                 iteration = metrics[2]
                 # ---
-                if exists('blake/latency_blake3.txt'):
-                    os.remove('blake/latency_blake3.txt')
-                if exists('blake/Latency(blake)_Blockchain.json'):
-                    os.remove('blake/Latency(blake)_Blockchain.json')
+                if exists('blake/files/latency_blake3.txt'):
+                    os.remove('blake/files/latency_blake3.txt')
+                if exists('blake/files/Latency(blake)_Blockchain.json'):
+                    os.remove('blake/files/Latency(blake)_Blockchain.json')
                 # ---
                 for i in range(0, iteration):
                     network = blakeLatencyNetwork(num_validators)
@@ -279,7 +279,7 @@ while True:
                         status = False
                         network.simulate(num_blocks, status)
                 # ---
-                file1 = open('blake/latency.txt', 'r')
+                file1 = open('blake/files/latency.txt', 'r')
                 lines = file1.readlines()
                 file1.close()
                 # ---
@@ -289,14 +289,14 @@ while True:
                     count += float(line.strip())
                 # ---
                 latency = (count / iteration) / 10
-                with open('blake/latency_blake3.txt', 'a') as the_file:
+                with open('blake/files/latency_blake3.txt', 'a') as the_file:
                     the_file.write(f'{latency:.6f}\n')
                 the_file.close()
                 print("Processing . . . ")
                 time.sleep(2)
                 print(f"Latency per block: {latency:.6f} seconds")
-                if exists('blake/latency.txt'):
-                    os.remove('blake/latency.txt')
+                if exists('blake/files/latency.txt'):
+                    os.remove('blake/files/latency.txt')
                 input("Press Enter to continue...")
             elif item2 == "2":
                 os.system("cls")
@@ -313,10 +313,10 @@ while True:
                 # --- Number of iterations
                 iteration = metrics[2]
                 # ---
-                if exists('blake/throughput_Blake3.txt'):
-                    os.remove('blake/throughput_Blake3.txt')
-                if exists('blake/Throughput(blake)_Blockchain.json'):
-                    os.remove('blake/Throughput(blake)_Blockchain.json')
+                if exists('blake/files/throughput_Blake3.txt'):
+                    os.remove('blake/files/throughput_Blake3.txt')
+                if exists('blake/files/Throughput(blake)_Blockchain.json'):
+                    os.remove('blake/files/Throughput(blake)_Blockchain.json')
                 # ---
                 for i in range(0, iteration):
                     network = blakeThroughputNetwork(num_validators)
@@ -327,7 +327,7 @@ while True:
                         status = False
                         network.simulate(num_blocks, status)
                 # ---
-                file1 = open('blake/throughput.txt', 'r')
+                file1 = open('blake/files/throughput.txt', 'r')
                 lines = file1.readlines()
                 file1.close()
                 # ---
@@ -337,14 +337,14 @@ while True:
                     count += float(line.strip())
                 # ---
                 throughput = count / iteration
-                with open('blake/throughput_Blake3.txt', 'a') as the_file:
+                with open('blake/files/throughput_Blake3.txt', 'a') as the_file:
                     the_file.write(f'{throughput:.6f}\n')
                 the_file.close()
                 print("Processing . . . ")
                 time.sleep(2)
                 print(f"Throughput: {throughput:.6f} transactions per second")
-                if exists('blake/throughput.txt'):
-                    os.remove('blake/throughput.txt')
+                if exists('blake/files/throughput.txt'):
+                    os.remove('blake/files/throughput.txt')
                 input("Press Enter to continue...")
             elif item2 == "3":
                 os.system("cls")
@@ -359,15 +359,15 @@ while True:
                 # --- Number of blocks
                 num_blocks = metrics[1]
                 # ---
-                if exists('blake/fault_blake3.txt'):
-                    os.remove('blake/fault_blake3.txt')
-                if exists('blake/Fault_Tolerance(blake)_Blockchain.json'):
-                    os.remove('blake/Fault_Tolerance(blake)_Blockchain.json')
+                if exists('blake/files/fault_blake3.txt'):
+                    os.remove('blake/files/fault_blake3.txt')
+                if exists('blake/files/Fault_Tolerance(blake)_Blockchain.json'):
+                    os.remove('blake/files/Fault_Tolerance(blake)_Blockchain.json')
                 # ---
                 network = blakeFaultNetwork(num_validators)
                 network.simulate(num_blocks)
                 fault_tolerance, f = network.calculate_fault_tolerance()
-                with open('blake/fault_blake3.txt', 'a') as the_file:
+                with open('blake/files/fault_blake3.txt', 'a') as the_file:
                     the_file.write(f'{fault_tolerance * 100}\n')
                 the_file.close()
                 print("Processing . . . ")
@@ -393,10 +393,10 @@ while True:
                 # --- Average power consumption of a single node in watts
                 avg_power = metrics[3]
                 # ---
-                if exists('blake/energy_blake3.txt'):
-                    os.remove('blake/energy_blake3.txt')
-                if exists('blake/Energy_Consumption(blake)_Blockchain.json'):
-                    os.remove('blake/Energy_Consumption(blake)_Blockchain.json')
+                if exists('blake/files/energy_blake3.txt'):
+                    os.remove('blake/files/energy_blake3.txt')
+                if exists('blake/files/Energy_Consumption(blake)_Blockchain.json'):
+                    os.remove('blake/files/Energy_Consumption(blake)_Blockchain.json')
                 # ---
                 for i in range(0, iteration):
                     network = blakeEnergyNetwork(num_validators)
@@ -407,7 +407,7 @@ while True:
                         status = False
                         network.simulate(num_blocks, avg_power, num_validators, status)
                 # ---
-                file1 = open('blake/energy.txt', 'r')
+                file1 = open('blake/files/energy.txt', 'r')
                 lines = file1.readlines()
                 file1.close()
                 # ---
@@ -417,14 +417,14 @@ while True:
                     count += float(line.strip())
                 # ---
                 energy = count / iteration
-                with open('blake/energy_blake3.txt', 'a') as the_file:
+                with open('blake/files/energy_blake3.txt', 'a') as the_file:
                     the_file.write(f'{energy:.6f}\n')
                 the_file.close()
                 print("Processing . . . ")
                 time.sleep(2)
                 print(f"Energy Consumption: {energy:.6f} Kwh")
-                if exists('blake/energy.txt'):
-                    os.remove('blake/energy.txt')
+                if exists('blake/files/energy.txt'):
+                    os.remove('blake/files/energy.txt')
                 input("Press Enter to continue...")
             elif item2 == "5":
                 os.system("cls")
